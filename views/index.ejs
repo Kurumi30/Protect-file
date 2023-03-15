@@ -2,17 +2,23 @@
 <html lang="pt-BR" oncontextmenu="return false">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>File Protect</title>
     <!--link rel="icon" href="" type="image/png"-->
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       form {
         display: grid;
         gap: 0.5rem;
         grid-template-columns: auto 1fr;
         max-width: 500px;
         margin: 0 auto;
+        height: 15vh;
       }
 
       button {
@@ -27,16 +33,16 @@
   <body>
     <% if(locals.fileLink != null) { %>
     <div>
-      Seu arquivo foi upado com sucesso!
+      Seu arquivo foi upado com sucesso! O link é:
       <a href="<%= locals.fileLink %>"><%= locals.fileLink %></a>
     </div>
     <% } %>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
       <label for="file">Arquivo:</label>
-      <input type="file" name="file" id="file" required />
+      <input type="file" name="file" id="file" required/>
       <label for="password">Senha:</label>
-      <input type="password" name="password" id="password" />
+      <input type="password" name="password" id="password"/>
       <button type="submit">Compartilhar</button>
     </form>
   </body>

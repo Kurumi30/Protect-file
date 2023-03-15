@@ -5,10 +5,13 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const File = require('./models/File')
+const { removeFiles } = require('./models/function')
 
-const app = express()
-app.use(express.urlencoded({ extended: true }))
+const port = process.env.PORT || 3000
 const upload = multer({ dest: "uploads" })
+const app = express()
+
+app.use(express.urlencoded({ extended: true }))
 
 mongoose.connect(process.env.DATABASE_URL)
 
@@ -16,6 +19,7 @@ app.set("view engine", "ejs")
 
 app.get("/", (req, res) => {
     res.render("index")
+    // res.sendFile(__dirname + '/views/index.html')
 })
 
 app.post("/upload", upload.single("file"), async (req, res) => {
@@ -37,16 +41,18 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 
 app.route("/file/:id").get(handleDownload).post(handleDownload)
 
+app.listen(port, () => console.log(`Server started on http://localhost:${port}`))
+
 async function handleDownload(req, res) {
     const file = await File.findById(req.params.id)
 
-    if(file.password != null) {
-        if(req.body,password == null) {
+    if (file.password != null) {
+        if (req.body.password == null) {
             res.render("password")
             return
         }
 
-        if(!(await bcrypt.compare(req.body.password, file.password))) {
+        if (!(await bcrypt.compare(req.body.password, file.password))) {
             res.render("password", { error: true })
             return
         }
@@ -57,6 +63,5 @@ async function handleDownload(req, res) {
     console.log(file.downloadCount)
 
     res.download(file.path, file.originalName)
+    removeFiles(10000)
 }
-
-app.listen(process.env.PORT)
